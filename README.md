@@ -55,6 +55,8 @@ CUDA_VISIBLE_DEVICES=1 python test_dataset.py --dataset CLIVE --resize --arch re
 ```bash
 CUDA_VISIBLE_DEVICES=0 python test_demo.py --img data/1000.JPG --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
 # > The image quality score is 10.430044178601875
+CUDA_VISIBLE_DEVICES=1 python test_demo.py --img data/1000.JPG --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
+# > The image quality score is 16.726127839961094
 ```
 
 ### Remark

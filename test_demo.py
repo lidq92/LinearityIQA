@@ -29,7 +29,7 @@ def run(args):
         y = model(im.unsqueeze(0))
     k = checkpoint['k']
     b = checkpoint['b']
-    print('The image quality score is {}'.format(y[-1].item() * k[-1] + b[-1])
+    print('The image quality score is {}'.format(y[-1].item() * k[-1] + b[-1]))
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Test Demo for LinearityIQA')
