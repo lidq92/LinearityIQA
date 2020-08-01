@@ -26,16 +26,16 @@ def run(args):
     test_dataset = IQADataset(args, 'test')
     test_loader = DataLoader(test_dataset)
 
-    optimizer = Adam([{'params': model.regression.parameters()}, 
-                      {'params': model.dr6.parameters()},
-                      {'params': model.dr7.parameters()},
-                      {'params': model.regr6.parameters()},
-                      {'params': model.regr7.parameters()},
-                      {'params': model.features.parameters(), 'lr': 0.0001 * 0.1}],
-                     lr=0.0001, weight_decay=0) 
+    # optimizer = Adam([{'params': model.regression.parameters()}, 
+    #                   {'params': model.dr6.parameters()},
+    #                   {'params': model.dr7.parameters()},
+    #                   {'params': model.regr6.parameters()},
+    #                   {'params': model.regr7.parameters()},
+    #                   {'params': model.features.parameters(), 'lr': 0.0001 * 0.1}],
+    #                  lr=0.0001, weight_decay=0) 
 
-    # Initialization
-    model, optimizer = amp.initialize(model, optimizer, opt_level=args.opt_level)
+    # # Initialization
+    # model, optimizer = amp.initialize(model, optimizer, opt_level=args.opt_level)
 
     mapping = True #  args.loss_type != 'l1' and args.loss_type != 'mse'
 
@@ -55,10 +55,10 @@ def run(args):
     np.save(args.save_result_file, performance)
      
 if __name__ == "__main__":
-    parser = ArgumentParser(description='Norm-in-Norm Loss with Faster Convergence and Better Performance for Image Quality Assessment')
+    parser = ArgumentParser(description='Test the Performance of LinearityIQA on a Dataset')
     parser.add_argument("--seed", type=int, default=19920517)
-    parser.add_argument('--opt_level', default='O1', type=str,
-                        help='opt_level for amp (default: O1)')
+    # parser.add_argument('--opt_level', default='O1', type=str,
+    #                     help='opt_level for amp (default: O1)')
     parser.add_argument('--arch', default='resnext101_32x8d', type=str,
                         help='arch name (default: resnext101_32x8d)')
     parser.add_argument('--pool', default='avg', type=str,
