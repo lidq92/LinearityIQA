@@ -33,7 +33,7 @@ CUDA_VISIBLE_DEVICES=1 python main.py --dataset KonIQ-10k --resize --exp_id 0 --
 More options can be seen by running the help command `python main.py --help`.
 #### Visualization
 ```bash
-tensorboard --logdir=logs --port=6006 # in the server (host:port)
+tensorboard --logdir=runs --port=6006 # --host your_host_ip; in the server (host:port)
 ssh -p port -L 6006:localhost:6006 user@host # in your PC. See the visualization in your PC
 ```
 
