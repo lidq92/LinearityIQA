@@ -87,8 +87,7 @@ def get_data_loaders(args):
                               batch_size=args.batch_size,
                               shuffle=True,
                               num_workers=4,
-                              pin_memory=True,
-                              drop_last=True)  #
+                              pin_memory=True)  # If the last batch only contains 1 sample, you need drop_last=True.
     val_dataset = IQADataset(args, 'val')
     val_loader = DataLoader(val_dataset)
     test_dataset = IQADataset(args, 'test')
