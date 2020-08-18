@@ -87,6 +87,10 @@ class IQAPerformance(Metric):
         ones = np.ones_like(pq)
         yp1 = np.concatenate((pq, ones), axis=1)
         if self.status == 'train':
+            # LSR solution of Q_i = k_1\hat{Q_i}+k_2. One can use the form of Eqn. (17) in the paper. 
+            # However, for an efficient implementation, we use the matrix form of the solution here.
+            # That is, h = (X^TX)^{-1}X^TY is the LSR solution of Y = Xh,
+            # where X = [\hat{\mathbf{Q}}, \mathbf{1}], h = [k_1,k_2]^T, and Y=\mathbf{Q}.
             h = np.matmul(np.linalg.inv(np.matmul(yp1.transpose(), yp1)), np.matmul(yp1.transpose(), sq))
             self.k[i] = h[0].item()
             self.b[i] = h[1].item()
