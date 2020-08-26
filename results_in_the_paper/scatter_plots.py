@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+plt.rcParams['pdf.fonttype'] = 42
 
 fontsize = 12
 datasets = ['KonIQ-10k', 'CLIVE']

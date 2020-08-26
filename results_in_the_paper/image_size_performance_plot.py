@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rcParams['pdf.fonttype'] = 42
 
 image_sizes = ['224x224', '512x384', '1024x768']
 legend_names = ('Image size: 224x224', 'Image size: 512x384', 'Image size: 1024x768')

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rcParams['pdf.fonttype'] = 42
 
 lrs = [1e-3, 1e-4, 1e-5]
 legend_names = ('Learning rate: 1e-3', 'Learning rate: 1e-4', 'Learning rate: 1e-5')

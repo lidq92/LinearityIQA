@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rcParams['pdf.fonttype'] = 42
 
 batch_sizes = [4, 8, 16]
 legend_names = ('Batch size: 4', 'Batch size: 8', 'Batch size: 16')

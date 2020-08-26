@@ -1,6 +1,7 @@
 import re
 import matplotlib.pyplot as plt
 import numpy as np
+plt.rcParams['pdf.fonttype'] = 42
  
 file_object = open('bhat.log','rU', encoding='UTF-8')
 bhat = []

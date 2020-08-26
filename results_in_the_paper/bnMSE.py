@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.rcParams['pdf.fonttype'] = 42
 
 fontsize = 28
 linewidth = 3.0
