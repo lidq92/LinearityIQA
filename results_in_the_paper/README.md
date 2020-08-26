@@ -1,4 +1,5 @@
 ## Results in the Paper
+Note: To avoid Type 3 fonts in the matplotlib plots, one can change the default `pdf.fonttype : 3` to `pdf.fonttype : 42`. After producing the plots, they may have large file sizes. One can then compress the files on [ilovepdf](https://www.ilovepdf.com/compress_pdf).
 ### Figure 1
 ```bash 
 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type l1 --test_during_training # Add --test_during_training if you want to show train/test performance values in TensorBoard during the training.
