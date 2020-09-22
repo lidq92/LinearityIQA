@@ -18,6 +18,8 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 source deactive
 ```
 
+Note: Please install apex from the [source](https://github.com/NVIDIA/apex). I installed the apex from the [source](https://github.com/NVIDIA/apex) (by following the `README.md`), and `pip freeze > requirements.txt` shows that `apex` version I used is `0.1`. Or you may try `conda install -c conda-forge/label/cf202003 nvidia-apex` to install apex v0.1 (see [nvidia-apex](https://anaconda.org/conda-forge/nvidia-apex)).
+
 ### Download Datasets
 Download the [KonIQ-10k](http://database.mmsp-kn.de/koniq-10k-database.html) and [CLIVE](https://live.ece.utexas.edu/research/ChallengeDB/index.html) datasets. Then, run the following `ln` commands in the root of the repo.
 ```bash
