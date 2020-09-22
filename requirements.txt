@@ -1,4 +1,4 @@
-apex==0.1
+# apex==0.1 # install with conda: conda install -c conda-forge/label/cf202003 nvidia-apex, or install from the source https://github.com/NVIDIA/apex
 h5py==2.10.0
 matplotlib==3.1.2
 numpy==1.17.3

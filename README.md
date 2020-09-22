@@ -15,6 +15,7 @@ LinearityIQA code for the following paper:
 conda create -n reproducibleresearch pip python=3.6
 source activate reproducibleresearch
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+conda install -c conda-forge nvidia-apex
 source deactive
 ```
 
