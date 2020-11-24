@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, Subset
 from torchvision.transforms.functional import resize, rotate, crop, hflip, to_tensor, normalize
 from PIL import Image
 import h5py
@@ -83,14 +83,25 @@ def get_data_loaders(args):
     :return: train_loader, val_loader, test_loader
     """
     train_dataset = IQADataset(args, 'train')
+    batch_size = args.batch_size
+    if args.debug:
+        num_samples = 5 * batch_size
+        print("Debug mode: reduced training dataset to the first {} samples".format(num_samples))
+        train_dataset = Subset(train_dataset, list(range(num_samples)))
+
     train_loader = DataLoader(train_dataset,
                               batch_size=args.batch_size,
                               shuffle=True,
                               num_workers=4,
                               pin_memory=True)  # If the last batch only contains 1 sample, you need drop_last=True.
     val_dataset = IQADataset(args, 'val')
-    val_loader = DataLoader(val_dataset)
     test_dataset = IQADataset(args, 'test')
-    test_loader = DataLoader(test_dataset)
+    if args.debug:
+        num_samples = 5
+        print("Debug mode: reduced validation/test datasets to the first {} samples".format(num_samples))
+        val_dataset = Subset(val_dataset, list(range(num_samples)))
+        test_dataset = Subset(test_dataset, list(range(num_samples)))
 
+    val_loader = DataLoader(val_dataset)    
+    test_loader = DataLoader(test_dataset)
     return train_loader, val_loader, test_loader

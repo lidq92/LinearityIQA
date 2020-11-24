@@ -56,7 +56,7 @@ def run(args):
         evaluator = create_supervised_evaluator(model, metrics={'IQA_performance': 
             IQAPerformance(status='test', k=k, b=b, mapping=mapping)}, device=device)
         evaluator.run(test_loader)
-        performance = evaluator.state.metrics['IQA_performance']
+        performance = evaluator.state.metrics
         for metric_print in metrics_printed:
             print('{}, {}: {:.3f}'.format(args.dataset, metric_print, performance[metric_print].item()))
         for metric_print in metrics_printed:
@@ -68,6 +68,12 @@ def run(args):
     loss_func = IQALoss(loss_type=args.loss_type, alpha=args.alpha, beta=args.beta, p=args.p, q=args.q, 
                         monotonicity_regularization=args.monotonicity_regularization, gamma=args.gamma, detach=args.detach)
     trainer = create_supervised_trainer(model, optimizer, loss_func, device=device, accumulation_steps=args.accumulation_steps)
+
+    if args.pbar:
+        from ignite.contrib.handlers import ProgressBar
+
+        ProgressBar().attach(trainer)
+
     evaluator_for_train = create_supervised_evaluator(model, metrics={'IQA_performance': 
         IQAPerformance(status='train', mapping=mapping)}, device=device)
 
@@ -84,7 +90,7 @@ def run(args):
     def epoch_event_function(engine):
         if args.test_during_training:
             evaluator_for_train.run(train_loader) # It is better to re-make a train_loader_for_evaluation so as not to disturb the random number generator.
-            performance = evaluator_for_train.state.metrics['IQA_performance']
+            performance = evaluator_for_train.state.metrics
             writer_add_scalar(writer, 'train', args.dataset, performance, engine.state.epoch)
             k = performance['k']
             b = performance['b']
@@ -95,12 +101,12 @@ def run(args):
         evaluator = create_supervised_evaluator(model, metrics={'IQA_performance': 
             IQAPerformance(status='test', k=k, b=b, mapping=mapping)}, device=device)
         evaluator.run(val_loader)
-        performance = evaluator.state.metrics['IQA_performance']
+        performance = evaluator.state.metrics
         writer_add_scalar(writer, 'val', args.dataset, performance, engine.state.epoch)
         val_criterion = abs(performance[args.val_criterion])  # when alpha=[0,1],loss_type='linearity', test_during_training=False, SROCC/PLCC can be negative during training.
         if args.test_during_training:
             evaluator.run(test_loader)
-            performance = evaluator.state.metrics['IQA_performance']
+            performance = evaluator.state.metrics
             writer_add_scalar(writer, 'test', args.dataset, performance, engine.state.epoch)
 
         global best_val_criterion, best_epoch
@@ -132,7 +138,7 @@ def run(args):
             b = checkpoint['b']
         else:
             evaluator_for_train.run(train_loader)
-            performance = evaluator_for_train.state.metrics['IQA_performance']
+            performance = evaluator_for_train.state.metrics
             k = performance['k']
             b = performance['b']
             checkpoint = {
@@ -147,7 +153,7 @@ def run(args):
         evaluator = create_supervised_evaluator(model, metrics={'IQA_performance': 
             IQAPerformance(status='test', k=k, b=b, mapping=mapping)}, device=device)
         evaluator.run(test_loader)
-        performance = evaluator.state.metrics['IQA_performance']
+        performance = evaluator.state.metrics
         for metric_print in metrics_printed:
             print('{}, {}: {:.3f}'.format(args.dataset, metric_print, performance[metric_print].item()))
         for metric_print in metrics_printed:
@@ -245,7 +251,12 @@ if __name__ == "__main__":
                         help='test_during_training?')  # It is better to re-make a train_loader_for_evaluation so as not to disturb the random number generator.
     parser.add_argument('--evaluate', action='store_true',
                         help='Evaluate only?')
-    
+
+    parser.add_argument('--debug', action='store_true',
+                        help='Debug the training by reducing dataflow to 5 batches')
+    parser.add_argument('--pbar', action='store_true',
+                        help='Use progressbar for the training')
+
     args = parser.parse_args()
     if args.lr_decay == 1 or args.epochs < 3:  # no lr decay
         args.lr_decay_step = args.epochs
