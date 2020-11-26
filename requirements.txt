@@ -3,11 +3,12 @@ h5py==2.10.0
 matplotlib==3.1.2
 numpy==1.17.3
 pandas==0.25.3
-Pillow==7.1.2
-pytorch-ignite==0.2.1
+Pillow==8.0.0
+pytorch-ignite==0.4.2
 scipy==1.3.1
-tensorboard==2.0.1
+tensorboard==2.3.0
 tensorboardX==1.9
-tensorflow-gpu==2.0.0
-torch==1.3.0
-torchvision==0.4.1
+# tensorflow-gpu==2.0.0
+torch==1.6.0
+torchvision==0.7.0
+trains==0.16.2
