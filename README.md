@@ -17,13 +17,14 @@ source activate reproducibleresearch
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple > install_0.log
 git clone https://github.com/NVIDIA/apex.git
 cd apex
+# source switch_cuda.sh 10.2 # [optional] if your cuda version for torch is 10.2
 pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ > install.log 
 cd ..
 rm -rf apex
 # source deactive
 ```
 
-Note: Please install apex from the [source](https://github.com/NVIDIA/apex). I installed the apex from the [source](https://github.com/NVIDIA/apex) (by following the `README.md`), and `pip freeze > requirements.txt` shows that `apex` version I used is `0.1`. Make sure that the CUDA version is consistent. If you have any installation problems, please find the details of error information in `*.log` file.
+Note: Please install apex from the [source](https://github.com/NVIDIA/apex). I installed the apex from the [source](https://github.com/NVIDIA/apex) (by following the `README.md`), and `pip freeze > requirements.txt` shows that `apex` version I used is `0.1`. Make sure that the CUDA version is consistent. If you have any installation problems, please find the details of error information in `*.log` file, e.g., if the cuda versions are not consistent between `apex` and `torch`, one can use [`switch_cuda.sh`](https://github.com/phohenecker/switch-cuda) to solve it.
 
 ### Download Datasets
 Download the [KonIQ-10k](http://database.mmsp-kn.de/koniq-10k-database.html) and [CLIVE](https://live.ece.utexas.edu/research/ChallengeDB/index.html) datasets. Then, run the following `ln` commands in the root of the repo.
