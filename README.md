@@ -24,19 +24,21 @@ rm -rf apex
 # source deactive
 ```
 
-Note: Please install apex from the [source](https://github.com/NVIDIA/apex). I installed the apex from the [source](https://github.com/NVIDIA/apex) (by following the `README.md`), and `pip freeze > requirements.txt` shows that `apex` version I used is `0.1`. Make sure that the CUDA version is consistent. If you have any installation problems, please find the details of error information in `*.log` file, e.g., if the cuda versions are not consistent between `apex` and `torch`, one can use [`switch_cuda.sh`](https://github.com/phohenecker/switch-cuda) to solve it.
+Note: Please install apex from the [source](https://github.com/NVIDIA/apex). I installed the apex from the [source](https://github.com/NVIDIA/apex) (by following the `README.md`), and `pip freeze > requirements.txt` shows that `apex` version I used is `0.1`. Make sure that the CUDA version is consistent. If you have any installation problems, please find the details of error information in `*.log` file, e.g., if the cuda versions are not consistent between `apex` and `torch`, one can use [`switch-cuda.sh`](https://github.com/phohenecker/switch-cuda) to solve it.
 
 ### Download Datasets
-Download the [KonIQ-10k](http://database.mmsp-kn.de/koniq-10k-database.html) and [CLIVE](https://live.ece.utexas.edu/research/ChallengeDB/index.html) datasets. Then, run the following `ln` commands in the root of the repo.
+Download the [KonIQ-10k](http://database.mmsp-kn.de/koniq-10k-database.html) and [CLIVE](https://live.ece.utexas.edu/research/ChallengeDB/index.html) datasets. Here is [an alternative link](https://pan.baidu.com/s/1FtHstHT0eTA1cmZ-vNiZ_Q) with password `9pwl`. Then, run the following `ln` commands in the root of the repo.
 ```bash
-ln -s KonIQ-10k_path KonIQ-10k # KonIQ-10k_path is your path to the KonIQ-10k dataset
-ln -s CLIVE_path CLIVE # CLIVE_path is your path to the CLIVE dataset
+cat your_downloaded_path/KonIQ-10k.tar.gz* | tar -xzf - # your_downloaded_path is your path to the downloaded files for KonIQ-10k dataset
+upzip your_downloaded_path/CLIVE(IQA).zip # your_downloaded_path is your path to the downloaded files for CLIVE dataset
+ln -s koniq10k/images/ KonIQ-10k 
+ln -s ChallengeDB_release/Images/ CLIVE 
 ```
 
 ### Training on KonIQ-10k
 ```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type Lp --p 1 --q 2 > exp_id=0-resnext101_32x8d-p=1-q=2-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2.pth". 
-CUDA_VISIBLE_DEVICES=1 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type Lp --p 1 --q 2 --alpha 1 0.1 > exp_id=0-resnext101_32x8d-p=1-q=2-alpha=1,0.1-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2plus0.1variant.pth"
+CUDA_VISIBLE_DEVICES=0 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 > exp_id=0-resnext101_32x8d-p=1-q=2-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2.pth". 
+CUDA_VISIBLE_DEVICES=1 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 --alpha 1 0.1 > exp_id=0-resnext101_32x8d-p=1-q=2-alpha=1,0.1-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2plus0.1variant.pth"
 ```
 More options can be seen by running the help command `python main.py --help`.
 #### Visualization
@@ -69,7 +71,7 @@ CUDA_VISIBLE_DEVICES=1 python test_demo.py --img data/1000.JPG --resize --arch r
 ```
 
 ### Remark
-If one wants to use the "Norm-in=Norm" loss in his project, he can refer to the `norm_loss_with_normalization` in `IQAloss.py`.
+If one wants to use the "Norm-in-Norm" loss in his project, he can refer to the `norm_loss_with_normalization` in `IQAloss.py`.
 
 If one wants to use the model in his project, he can refer to the `IQAmodel.py`.
 

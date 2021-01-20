@@ -30,11 +30,11 @@ class IQALoss(torch.nn.Module):
         return loss
 
     def loss_func(self, y_pred, y):
-        if self.loss_type == 'l1':
+        if self.loss_type == 'mae':
             loss = F.l1_loss(y_pred, y)
         elif self.loss_type == 'mse':
             loss = F.mse_loss(y_pred, y)
-        elif self.loss_type == 'Lp':
+        elif self.loss_type == 'norm-in-norm':
             loss = norm_loss_with_normalization(y_pred, y, alpha=self.alpha, p=self.p, q=self.q, detach=self.detach)
         elif self.loss_type == 'min-max-norm':
             loss = norm_loss_with_min_max_normalization(y_pred, y, alpha=self.alpha, detach=self.detach)

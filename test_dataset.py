@@ -37,7 +37,7 @@ def run(args):
     # # Initialization
     # model, optimizer = amp.initialize(model, optimizer, opt_level=args.opt_level)
 
-    mapping = True #  args.loss_type != 'l1' and args.loss_type != 'mse'
+    mapping = True #  args.loss_type != 'mae' and args.loss_type != 'mse'
 
     checkpoint = torch.load(args.trained_model_file)
     model.load_state_dict(checkpoint['model'])
@@ -47,7 +47,7 @@ def run(args):
     evaluator = create_supervised_evaluator(model, metrics={'IQA_performance': 
         IQAPerformance(status='test', k=k, b=b, mapping=mapping)}, device=device)
     evaluator.run(test_loader)
-    performance = evaluator.state.metrics['IQA_performance']
+    performance = evaluator.state.metrics
     # TODO: PLCC, RMSE after nonlinear mapping when conducting cross-dataset evaluation
     metrics_printed = ['SROCC', 'PLCC', 'RMSE', 'SROCC1', 'PLCC1', 'RMSE1', 'SROCC2', 'PLCC2', 'RMSE2']
     for metric_print in metrics_printed:
@@ -57,8 +57,15 @@ def run(args):
 if __name__ == "__main__":
     parser = ArgumentParser(description='Test the Performance of LinearityIQA on a Dataset')
     parser.add_argument("--seed", type=int, default=19920517)
-    # parser.add_argument('--opt_level', default='O1', type=str,
-    #                     help='opt_level for amp (default: O1)')
+    parser.add_argument('--lr', type=float, default=1e-4,
+                        help='learning rate (default: 1e-4)')
+    parser.add_argument('-bs', '--batch_size', type=int, default=8,
+                        help='batch size for training (default: 8)')
+    parser.add_argument('--ft_lr_ratio', type=float, default=0.1,
+                        help='ft_lr_ratio (default: 0.1)')
+    parser.add_argument('-e', '--epochs', type=int, default=30,
+                        help='number of epochs to train (default: 30)')
+
     parser.add_argument('--arch', default='resnext101_32x8d', type=str,
                         help='arch name (default: resnext101_32x8d)')
     parser.add_argument('--pool', default='avg', type=str,
@@ -69,8 +76,18 @@ if __name__ == "__main__":
                         help='P6 (default: 1)')
     parser.add_argument('--P7', type=int, default=1,
                         help='P7 (default: 1)')
+    parser.add_argument('--loss_type', default='norm-in-norm', type=str,
+                        help='loss type (default: norm-in-norm)')
+    parser.add_argument('--p', type=float, default=1,
+                        help='p (default: 1)')
+    parser.add_argument('--q', type=float, default=2,
+                        help='q (default: 2)')
+    parser.add_argument('--alpha', nargs=2, type=float, default=[1, 0],
+                        help='loss coefficient alpha in total loss (default: [1, 0])')
+    parser.add_argument('--beta', nargs=3, type=float, default=[.1, .1, 1],
+                        help='loss coefficients for level 6, 7, and 6+7 (default: [.1, .1, 1])')
 
-    parser.add_argument('--trained_model_file', default='checkpoints/p1q2.pth', type=str,
+    parser.add_argument('--trained_model_file', default=None, type=str,
                         help='trained_model_file')
 
     parser.add_argument('--dataset', default='KonIQ-10k', type=str,
@@ -128,6 +145,12 @@ if __name__ == "__main__":
     random.seed(args.seed)
 
     torch.utils.backcompat.broadcast_warning.enabled = True
+
+    if args.trained_model_file is None:
+        args.format_str = '{}-{}-bn_end={}-loss={}-p={}-q={}-detach-False-ft_lr_ratio={}-alpha={}-beta={}-KonIQ-10k-res={}-{}x{}-aug={}-monotonicity=False-lr={}-bs={}-e={}-opt_level=O1-EXP{}'\
+                      .format(args.arch, args.pool, args.use_bn_end, args.loss_type, args.p, args.q, args.ft_lr_ratio, args.alpha, args.beta, 
+                              args.resize, args.resize_size_h, args.resize_size_w, args.augment, args.lr, args.batch_size, args.epochs, args.exp_id)
+        args.trained_model_file = 'checkpoints/' + args.format_str
 
     if not os.path.exists('results'):
         os.makedirs('results')

@@ -45,7 +45,7 @@ def run(args):
     # Initialization
     model, optimizer = amp.initialize(model, optimizer, opt_level=args.opt_level)
 
-    mapping = True #  args.loss_type != 'l1' and args.loss_type != 'mse'
+    mapping = True #  args.loss_type != 'mae' and args.loss_type != 'mse'
 
     if args.evaluate:
         checkpoint = torch.load(args.trained_model_file)
@@ -205,8 +205,8 @@ if __name__ == "__main__":
                         help='P6 (default: 1)')
     parser.add_argument('--P7', type=int, default=1,
                         help='P7 (default: 1)')
-    parser.add_argument('--loss_type', default='Lp', type=str,
-                        help='loss type (default: Lp)')
+    parser.add_argument('--loss_type', default='norm-in-norm', type=str,
+                        help='loss type (default: norm-in-norm)')
     parser.add_argument('--p', type=float, default=1,
                         help='p (default: 1)')
     parser.add_argument('--q', type=float, default=2,
