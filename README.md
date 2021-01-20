@@ -4,7 +4,7 @@
 ## Description
 LinearityIQA code for the following paper:
 
-- Dingquan Li, Tingting Jiang, and Ming Jiang. [Norm-in-Norm Loss with Faster Convergence and Better Performance for Image Quality Assessment](). In Proceedings of the 28th ACM International Conference on Multimedia (MM ’20), October 12-16, 2020, Seattle, WA, USA. [[arxiv version]](https://arxiv.org/abs/2008.03889)
+- Dingquan Li, Tingting Jiang, and Ming Jiang. [Norm-in-Norm Loss with Faster Convergence and Better Performance for Image Quality Assessment](https://dl.acm.org/doi/abs/10.1145/3394171.3413804). In Proceedings of the 28th ACM International Conference on Multimedia (MM ’20), October 12-16, 2020, Seattle, WA, USA. [[arxiv version]](https://arxiv.org/abs/2008.03889)
 
 ![Norm-in-Norm Loss](norm-in-norm-loss.jpg)
 ![Framework](framework.jpg)
