@@ -47,7 +47,7 @@ tensorboard --logdir=runs --port=6006 # --host your_host_ip; in the server (host
 ssh -p port -L 6006:localhost:6006 user@host # in your PC. See the visualization in your PC
 ```
 
-You can download our [checkpoints](https://pan.baidu.com/s/1MRamimHWX8F-SOQ_QsIrvg) with a password `4z7z`. Then paste it to `checkpoints/`.
+You can download our [checkpoints](https://pan.baidu.com/s/1MRamimHWX8F-SOQ_QsIrvg) with a password `4z7z` (Alternative way: see [LinearityIQA/issues/10](https://github.com/lidq92/LinearityIQA/issues/10#issuecomment-783497363)). Then paste it to `checkpoints/`.
 
 Note: We do not set `drop_last=True` where we obtained our results in the paper. However, if the `the size of training data % batch size == 1`, the last batch only contains 1 sample, one needs to set `drop_last=True` when prepare the train_loader in line 86-90 of `IQAdataset.py`. For example, if 80% images of CLIVE are considered as the training data, and the batch size is 8, then based on `929 % 8 == 1`, you will have to set `drop_last=True`. Otherwise, you will get an error in 1D batch norm layer.
 
