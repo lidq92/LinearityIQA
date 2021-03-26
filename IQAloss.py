@@ -106,7 +106,7 @@ def norm_loss_with_normalization(y_pred, y, alpha=[1, 1], p=2, q=2, detach=False
             loss0 = torch.norm(err, p=p) / scale  # Actually, p=q=2 is related to PLCC
             loss0 = torch.pow(loss0, p) if exponent else loss0 #
         if alpha[1] > 0:
-            rho =  torch.cosine_similarity(y_pred, y)  #  
+            rho =  torch.cosine_similarity(y_pred.t(), y.t())  #  
             err = rho * y_pred - y
             if p < 1:  # avoid gradient explosion when 0<=p<1; and avoid vanishing gradient problem when p < 0
                 err += eps 
@@ -141,7 +141,7 @@ def norm_loss_with_min_max_normalization(y_pred, y, alpha=[1, 1], detach=False):
         if alpha[0] > 0:
             loss0 = F.mse_loss(y_pred, y)
         if alpha[1] > 0:
-            rho =  torch.cosine_similarity(y_pred, y)  #
+            rho =  torch.cosine_similarity(y_pred.t(), y.t())  #
             loss1 = F.mse_loss(rho * y_pred, y) 
         return (alpha[0] * loss0 + alpha[1] * loss1) / (alpha[0] + alpha[1])
     else:
@@ -159,7 +159,7 @@ def norm_loss_with_mean_normalization(y_pred, y, alpha=[1, 1], detach=False):
         if alpha[0] > 0:
             loss0 = F.mse_loss(y_pred, y) / 4
         if alpha[1] > 0:
-            rho =  torch.cosine_similarity(y_pred, y)  #
+            rho =  torch.cosine_similarity(y_pred.t(), y.t())  #
             loss1 = F.mse_loss(rho * y_pred, y) / 4
         return (alpha[0] * loss0 + alpha[1] * loss1) / (alpha[0] + alpha[1])
     else:
@@ -175,7 +175,7 @@ def norm_loss_with_scaling(y_pred, y, alpha=[1, 1], p=2, detach=False):
         if alpha[0] > 0:
             loss0 = F.mse_loss(y_pred, y) / 4
         if alpha[1] > 0:
-            rho =  torch.cosine_similarity(y_pred, y)  #
+            rho =  torch.cosine_similarity(y_pred.t(), y.t())  #
             loss1 = F.mse_loss(rho * y_pred, y) / 4
         return (alpha[0] * loss0 + alpha[1] * loss1) / (alpha[0] + alpha[1])
     else:
