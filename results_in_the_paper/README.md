@@ -115,6 +115,8 @@ python test_dataset.py --dataset CLIVE --resize --alpha 1 0.1
 # python test_dataset.py --dataset CLIVE --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
 ```
 
+Note: Due to a wrong implementation of `rho`'s calculation, the result of `𝑙 + 0.1𝑙′` is no longer the reported one. It should be xxx (To be updated).
+
 ### Figure A1 & A2
 Uncomment line 96 of `IQAloss.py` to print bhat (i.e., $\hat{b}$).
 ```bash
