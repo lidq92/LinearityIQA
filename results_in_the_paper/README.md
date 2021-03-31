@@ -115,8 +115,7 @@ python test_dataset.py --dataset CLIVE --resize --alpha 1 0.1
 # python test_dataset.py --dataset CLIVE --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
 ```
 
-Note: Due to a wrong implementation of `rho`'s calculation, the result of `𝑙 + 0.1𝑙′` is no longer the reported one. It should be `SROCC=0.937, PLCC=0.946` on KonIQ-10k and `SROCC=0.834, PLCC=0.850` on CLIVE. Additionally, the result of `𝑙′` is `SROCC=0.937, PLCC=0.947` on KonIQ-10k and `SROCC=0.831, PLCC=0.847` on CLIVE.
-
+Note: Due to a wrong implementation of `rho`'s calculation, the result of `𝑙 + 0.1𝑙′` is no longer the reported one. It should be `SROCC=0.937, PLCC=0.946` on KonIQ-10k and `SROCC=0.834, PLCC=0.850` on CLIVE. Additionally, the result of `𝑙′` is `SROCC=0.937, PLCC=0.947` on KonIQ-10k and `SROCC=0.831, PLCC=0.847` on CLIVE. And the result of `𝑙+𝑙′` is `SROCC=0.937, PLCC=0.947` on KonIQ-10k and `SROCC=0.836, PLCC=0.848` on CLIVE. 
 ### Figure A1 & A2
 Uncomment line 96 of `IQAloss.py` to print bhat (i.e., $\hat{b}$).
 ```bash
