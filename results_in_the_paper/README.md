@@ -28,7 +28,7 @@ cd ..
 ### Figure 5
 ```bash 
 ## base exp
-python main.py --resize --lr 1e-4 -bs 16 --ft_lr_ratio 0.1 --arch resnet50
+python main.py --resize --lr 1e-4 -bs 8 --ft_lr_ratio 0.1 --arch resnet50
 # other lr
 python main.py --resize --lr 1e-3 --arch resnet50
 python main.py --resize --lr 1e-5 --arch resnet50
