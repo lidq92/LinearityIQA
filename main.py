@@ -27,7 +27,7 @@ def writer_add_scalar(writer, status, dataset, scalars, iter):
 
 def run(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = IQAModel(arch=args.arch, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
+    model = IQAModel(arch=args.architecture, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
     print(model)
     if args.ft_lr_ratio == .0:
         for param in model.features.parameters():
@@ -39,8 +39,8 @@ def run(args):
                       {'params': model.dr7.parameters()},
                       {'params': model.regr6.parameters()},
                       {'params': model.regr7.parameters()},
-                      {'params': model.features.parameters(), 'lr': args.lr * args.ft_lr_ratio}],
-                     lr=args.lr, weight_decay=args.weight_decay) # Adam can be changed to other optimizers, such as SGD, Adadelta.
+                      {'params': model.features.parameters(), 'lr': args.learning_rate * args.ft_lr_ratio}],
+                     lr=args.learning_rate, weight_decay=args.weight_decay) # Adam can be changed to other optimizers, such as SGD, Adadelta.
 
     # Initialization
     model, optimizer = amp.initialize(model, optimizer, opt_level=args.opt_level)
@@ -167,11 +167,11 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Norm-in-Norm Loss with Faster Convergence and Better Performance for Image Quality Assessment')
     parser.add_argument("--seed", type=int, default=19920517)
 
-    parser.add_argument('--lr', type=float, default=1e-4,
+    parser.add_argument('-lr', '--learning_rate', type=float, default=1e-4,
                         help='learning rate (default: 1e-4)')
     parser.add_argument('-bs', '--batch_size', type=int, default=8,
                         help='batch size for training (default: 8)')
-    parser.add_argument('--ft_lr_ratio', type=float, default=0.1,
+    parser.add_argument('-flr', '--ft_lr_ratio', type=float, default=0.1,
                         help='ft_lr_ratio (default: 0.1)')
     parser.add_argument('-accum', '--accumulation_steps', type=int, default=1,
                         help='accumulation_steps for training (default: 1)')
@@ -179,82 +179,82 @@ if __name__ == "__main__":
                         help='number of epochs to train (default: 30)')
     parser.add_argument('-wd', '--weight_decay', type=float, default=0.0,
                         help='weight decay (default: 0.0)')
-    parser.add_argument('--lr_decay', type=float, default=0.1,
+    parser.add_argument('-lrd', '--lr_decay', type=float, default=0.1,
                         help='lr decay (default: 0.1)')
-    parser.add_argument('--overall_lr_decay', type=float, default=0.01,
+    parser.add_argument('-olrd', '--overall_lr_decay', type=float, default=0.01,
                         help='overall lr decay (default: 0.01)')
-    parser.add_argument('--opt_level', default='O1', type=str,
+    parser.add_argument('-optl', '--opt_level', default='O1', type=str,
                         help='opt_level for amp (default: O1)')
-    parser.add_argument('--randomness', action='store_true',
+    parser.add_argument('-rn', '--randomness', action='store_true',
                         help='Allow randomness during training?')
-    parser.add_argument('--val_criterion', default='SROCC', type=str,
+    parser.add_argument('-valc', '--val_criterion', default='SROCC', type=str,
                         help='val_criterion: SROCC or PLCC (default: SROCC)') # If using RMSE, minor modification should be made, i.e., 
 
-    parser.add_argument('--alpha', nargs=2, type=float, default=[1, 0],
+    parser.add_argument('-a', '--alpha', nargs=2, type=float, default=[1, 0],
                         help='loss coefficient alpha in total loss (default: [1, 0])')
-    parser.add_argument('--beta', nargs=3, type=float, default=[.1, .1, 1],
+    parser.add_argument('-b', '--beta', nargs=3, type=float, default=[.1, .1, 1],
                         help='loss coefficients for level 6, 7, and 6+7 (default: [.1, .1, 1])')
 
-    parser.add_argument('--arch', default='resnext101_32x8d', type=str,
+    parser.add_argument('-arch', '--architecture', default='resnext101_32x8d', type=str,
                         help='arch name (default: resnext101_32x8d)')
-    parser.add_argument('--pool', default='avg', type=str,
+    parser.add_argument('-pl', '--pool', default='avg', type=str,
                         help='pool method (default: avg)')
-    parser.add_argument('--use_bn_end', action='store_true',
+    parser.add_argument('-ubne', '--use_bn_end', action='store_true',
                         help='Use bn at the end of the output?')
-    parser.add_argument('--P6', type=int, default=1,
+    parser.add_argument('-P6', '--P6', type=int, default=1,
                         help='P6 (default: 1)')
-    parser.add_argument('--P7', type=int, default=1,
+    parser.add_argument('-P7', '--P7', type=int, default=1,
                         help='P7 (default: 1)')
-    parser.add_argument('--loss_type', default='norm-in-norm', type=str,
+    parser.add_argument('-lt', '--loss_type', default='norm-in-norm', type=str,
                         help='loss type (default: norm-in-norm)')
-    parser.add_argument('--p', type=float, default=1,
+    parser.add_argument('-p', '--p', type=float, default=1,
                         help='p (default: 1)')
-    parser.add_argument('--q', type=float, default=2,
+    parser.add_argument('-q', '--q', type=float, default=2,
                         help='q (default: 2)')
-    parser.add_argument('--detach', action='store_true',
+    parser.add_argument('-detach', '--detach', action='store_true',
                         help='Detach in loss?')
-    parser.add_argument('--monotonicity_regularization', action='store_true',
+    parser.add_argument('-monoreg', '--monotonicity_regularization', action='store_true',
                         help='use monotonicity_regularization?')
-    parser.add_argument('--gamma', type=float, default=0.1,
+    parser.add_argument('-g', '--gamma', type=float, default=0.1,
                         help='coefficient of monotonicity regularization (default: 0.1)')
 
-    parser.add_argument('--dataset', default='KonIQ-10k', type=str,
+    parser.add_argument('-ds', '--dataset', default='KonIQ-10k', type=str,
                         help='dataset name (default: KonIQ-10k)')
-    parser.add_argument('--exp_id', default=0, type=int,
+    parser.add_argument('-eid', '--exp_id', default=0, type=int,
                         help='exp id for train-val-test splits (default: 0)')
-    parser.add_argument('--train_ratio', type=float, default=0.6,
+    parser.add_argument('-tr', '--train_ratio', type=float, default=0.6,
                         help='train ratio (default: 0.6)')
-    parser.add_argument('--train_and_val_ratio', type=float, default=0.8,
+    parser.add_argument('-tvr', '--train_and_val_ratio', type=float, default=0.8,
                         help='train_and_val_ratio (default: 0.8)')
 
-    parser.add_argument('--resize', action='store_true',
+    parser.add_argument('-rs', '--resize', action='store_true',
                         help='Resize?')
     parser.add_argument('-rs_h', '--resize_size_h', default=498, type=int,
                         help='resize_size_h (default: 498)')
     parser.add_argument('-rs_w', '--resize_size_w', default=664, type=int,
                         help='resize_size_w (default: 664)')
 
-    parser.add_argument('--augment', action='store_true',
+    parser.add_argument('-augment', '--augmentation', action='store_true',
                         help='Data augmentation?')
-    parser.add_argument('--angle', default=2, type=float,
+    parser.add_argument('-ag', '--angle', default=2, type=float,
                         help='angle (default: 2)')
     parser.add_argument('-cs_h', '--crop_size_h', default=498, type=int,
                         help='crop_size_h (default: 498)')
     parser.add_argument('-cs_w', '--crop_size_w', default=498, type=int,
                         help='crop_size_w (default: 498)')
-    parser.add_argument('--hflip_p', default=0.5, type=float,
+    parser.add_argument('-hp', '--hflip_p', default=0.5, type=float,
                         help='hfilp_p (default: 0.5)')
 
-    parser.add_argument("--log_dir", type=str, default="runs",
+    parser.add_argument('-logd', "--log_dir", type=str, default="runs",
                         help="log directory for Tensorboard log output")
-    parser.add_argument('--test_during_training', action='store_true',
+    parser.add_argument('-tdt', '--test_during_training', action='store_true',
                         help='test_during_training?')  # It is better to re-make a train_loader_for_evaluation so as not to disturb the random number generator.
-    parser.add_argument('--evaluate', action='store_true',
+    parser.add_argument('-eval', '--evaluate', action='store_true',
                         help='Evaluate only?')
 
-    parser.add_argument('--debug', action='store_true',
+    parser.add_argument('-debug', '--debug', action='store_true',
                         help='Debug the training by reducing dataflow to 5 batches')
-    parser.add_argument('--pbar', action='store_true',
+    parser.add_argument('-pbar', '--pbar', action='store_true',
                         help='Use progressbar for the training')
 
     args = parser.parse_args()
@@ -292,9 +292,9 @@ if __name__ == "__main__":
     torch.utils.backcompat.broadcast_warning.enabled = True
 
     args.format_str = '{}-{}-bn_end={}-loss={}-p={}-q={}-detach-{}-ft_lr_ratio={}-alpha={}-beta={}-{}-res={}-{}x{}-aug={}-monotonicity={}-lr={}-bs={}-e={}-opt_level={}-EXP{}'\
-                      .format(args.arch, args.pool, args.use_bn_end, args.loss_type, args.p, args.q, args.detach, args.ft_lr_ratio, args.alpha, args.beta, 
-                              args.dataset, args.resize, args.resize_size_h, args.resize_size_w, args.augment, 
-                              args.monotonicity_regularization, args.lr, args.batch_size, args.epochs, args.opt_level, args.exp_id)
+                      .format(args.architecture, args.pool, args.use_bn_end, args.loss_type, args.p, args.q, args.detach, args.ft_lr_ratio, args.alpha, args.beta, 
+                              args.dataset, args.resize, args.resize_size_h, args.resize_size_w, args.augmentation, 
+                              args.monotonicity_regularization, args.learning_rate, args.batch_size, args.epochs, args.opt_level, args.exp_id)
     if not os.path.exists('checkpoints'):
         os.makedirs('checkpoints')
     args.trained_model_file = 'checkpoints/' + args.format_str

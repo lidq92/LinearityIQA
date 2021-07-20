@@ -15,7 +15,7 @@ import h5py
 
 def run(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = IQAModel(arch=args.arch, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
+    model = IQAModel(arch=args.architecture, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
     im = Image.open(args.img_path).convert('RGB')  #
     if args.resize:  # resize or not?
         im = resize(im, (args.resize_size_h, args.resize_size_w)) #
@@ -34,7 +34,7 @@ def run(args):
 if __name__ == "__main__":
     parser = ArgumentParser(description='Test Demo for LinearityIQA')
 
-    parser.add_argument('--arch', default='resnext101_32x8d', type=str,
+    parser.add_argument('--architecture', default='resnext101_32x8d', type=str,
                         help='arch name (default: resnext101_32x8d)')
     parser.add_argument('--pool', default='avg', type=str,
                         help='pool method (default: avg)')
@@ -52,9 +52,9 @@ if __name__ == "__main__":
                         help='test image path')
     parser.add_argument('--resize', action='store_true',
                         help='Resize?')
-    parser.add_argument('-rs_h', '--resize_size_h', default=498, type=int,
+    parser.add_argument('--resize_size_h', default=498, type=int,
                         help='resize_h (default: 498)')
-    parser.add_argument('-rs_w', '--resize_size_w', default=664, type=int,
+    parser.add_argument('--resize_size_w', default=664, type=int,
                         help='resize_w (default: 664)')
 
     args = parser.parse_args()

@@ -22,7 +22,7 @@ from argparse import ArgumentParser
 
 def run(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = IQAModel(arch=args.arch, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
+    model = IQAModel(arch=args.architecture, pool=args.pool, use_bn_end=args.use_bn_end, P6=args.P6, P7=args.P7).to(device)  #
     test_dataset = IQADataset(args, 'test')
     test_loader = DataLoader(test_dataset)
 
@@ -57,64 +57,65 @@ def run(args):
 if __name__ == "__main__":
     parser = ArgumentParser(description='Test the Performance of LinearityIQA on a Dataset')
     parser.add_argument("--seed", type=int, default=19920517)
-    parser.add_argument('--lr', type=float, default=1e-4,
+
+    parser.add_argument('-lr', '--learning_rate', type=float, default=1e-4,
                         help='learning rate (default: 1e-4)')
     parser.add_argument('-bs', '--batch_size', type=int, default=8,
                         help='batch size for training (default: 8)')
-    parser.add_argument('--ft_lr_ratio', type=float, default=0.1,
+    parser.add_argument('-flr', '--ft_lr_ratio', type=float, default=0.1,
                         help='ft_lr_ratio (default: 0.1)')
     parser.add_argument('-e', '--epochs', type=int, default=30,
                         help='number of epochs to train (default: 30)')
 
-    parser.add_argument('--arch', default='resnext101_32x8d', type=str,
+    parser.add_argument('-arch', '--architecture', default='resnext101_32x8d', type=str,
                         help='arch name (default: resnext101_32x8d)')
-    parser.add_argument('--pool', default='avg', type=str,
+    parser.add_argument('-pl', '--pool', default='avg', type=str,
                         help='pool method (default: avg)')
-    parser.add_argument('--use_bn_end', action='store_true',
+    parser.add_argument('-ubne', '--use_bn_end', action='store_true',
                         help='Use bn at the end of the output?')
-    parser.add_argument('--P6', type=int, default=1,
+    parser.add_argument('-P6', '--P6', type=int, default=1,
                         help='P6 (default: 1)')
-    parser.add_argument('--P7', type=int, default=1,
+    parser.add_argument('-P7', '--P7', type=int, default=1,
                         help='P7 (default: 1)')
-    parser.add_argument('--loss_type', default='norm-in-norm', type=str,
+    parser.add_argument('-lt', '--loss_type', default='norm-in-norm', type=str,
                         help='loss type (default: norm-in-norm)')
-    parser.add_argument('--p', type=float, default=1,
+    parser.add_argument('-p', '--p', type=float, default=1,
                         help='p (default: 1)')
-    parser.add_argument('--q', type=float, default=2,
+    parser.add_argument('-q', '--q', type=float, default=2,
                         help='q (default: 2)')
-    parser.add_argument('--alpha', nargs=2, type=float, default=[1, 0],
+    parser.add_argument('-a', '--alpha', nargs=2, type=float, default=[1, 0],
                         help='loss coefficient alpha in total loss (default: [1, 0])')
-    parser.add_argument('--beta', nargs=3, type=float, default=[.1, .1, 1],
+    parser.add_argument('-b', '--beta', nargs=3, type=float, default=[.1, .1, 1],
                         help='loss coefficients for level 6, 7, and 6+7 (default: [.1, .1, 1])')
 
-    parser.add_argument('--trained_model_file', default=None, type=str,
+    parser.add_argument('-modelfile', '--trained_model_file', default=None, type=str,
                         help='trained_model_file')
 
-    parser.add_argument('--dataset', default='KonIQ-10k', type=str,
+    parser.add_argument('-ds', '--dataset', default='KonIQ-10k', type=str,
                         help='dataset name (default: KonIQ-10k)')
-    parser.add_argument('--exp_id', default=0, type=int,
+    parser.add_argument('-eid', '--exp_id', default=0, type=int,
                         help='exp id for train-val-test splits (default: 0)')
-    parser.add_argument('--train_ratio', type=float, default=0,
+    parser.add_argument('-tr', '--train_ratio', type=float, default=0,
                         help='train ratio (default: 0)')
-    parser.add_argument('--train_and_val_ratio', type=float, default=0,
+    parser.add_argument('-tvr', '--train_and_val_ratio', type=float, default=0,
                         help='train_and_val_ratio (default: 0)')
 
-    parser.add_argument('--resize', action='store_true',
+    parser.add_argument('-rs', '--resize', action='store_true',
                         help='Resize?')
     parser.add_argument('-rs_h', '--resize_size_h', default=498, type=int,
                         help='resize_size_h (default: 498)')
     parser.add_argument('-rs_w', '--resize_size_w', default=664, type=int,
                         help='resize_size_w (default: 664)')
 
-    parser.add_argument('--augment', action='store_true',
+    parser.add_argument('-augment', '--augmentation', action='store_true',
                         help='Data augmentation?')
-    parser.add_argument('--angle', default=2, type=float,
+    parser.add_argument('-ag', '--angle', default=2, type=float,
                         help='angle (default: 2)')
     parser.add_argument('-cs_h', '--crop_size_h', default=498, type=int,
                         help='crop_size_h (default: 498)')
     parser.add_argument('-cs_w', '--crop_size_w', default=498, type=int,
                         help='crop_size_w (default: 498)')
-    parser.add_argument('--hflip_p', default=0.5, type=float,
+    parser.add_argument('-hp', '--hflip_p', default=0.5, type=float,
                         help='hfilp_p (default: 0.5)')
     
     args = parser.parse_args()
@@ -148,8 +149,8 @@ if __name__ == "__main__":
 
     if args.trained_model_file is None:
         args.format_str = '{}-{}-bn_end={}-loss={}-p={}-q={}-detach-False-ft_lr_ratio={}-alpha={}-beta={}-KonIQ-10k-res={}-{}x{}-aug={}-monotonicity=False-lr={}-bs={}-e={}-opt_level=O1-EXP{}'\
-                      .format(args.arch, args.pool, args.use_bn_end, args.loss_type, args.p, args.q, args.ft_lr_ratio, args.alpha, args.beta, 
-                              args.resize, args.resize_size_h, args.resize_size_w, args.augment, args.lr, args.batch_size, args.epochs, args.exp_id)
+                      .format(args.architecture, args.pool, args.use_bn_end, args.loss_type, args.p, args.q, args.ft_lr_ratio, args.alpha, args.beta, 
+                              args.resize, args.resize_size_h, args.resize_size_w, args.augmentation, args.learning_rate, args.batch_size, args.epochs, args.exp_id)
         args.trained_model_file = 'checkpoints/' + args.format_str
 
     if not os.path.exists('results'):

@@ -15,7 +15,7 @@ class IQADataset(Dataset):
     def __init__(self, args, status='train', loader=default_loader):
         self.status = status
 
-        self.augment = args.augment
+        self.augment = args.augmentation
         self.angle = args.angle
         self.crop_size_h = args.crop_size_h
         self.crop_size_w = args.crop_size_w
