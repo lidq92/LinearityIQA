@@ -37,8 +37,8 @@ ln -s ChallengeDB_release/Images/ CLIVE
 
 ### Training on KonIQ-10k
 ```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 > exp_id=0-resnext101_32x8d-p=1-q=2-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2.pth". 
-CUDA_VISIBLE_DEVICES=1 python main.py --dataset KonIQ-10k --resize --exp_id 0 --lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 --arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 --alpha 1 0.1 > exp_id=0-resnext101_32x8d-p=1-q=2-alpha=1,0.1-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2plus0.1variant.pth"
+CUDA_VISIBLE_DEVICES=0 python main.py --dataset KonIQ-10k --resize --exp_id 0 -lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 -arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 > exp_id=0-resnext101_32x8d-p=1-q=2-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2.pth". 
+CUDA_VISIBLE_DEVICES=1 python main.py --dataset KonIQ-10k --resize --exp_id 0 -lr 1e-4 -bs 8 -e 30 --ft_lr_ratio 0.1 -arch resnext101_32x8d --loss_type norm-in-norm --p 1 --q 2 --alpha 1 0.1 > exp_id=0-resnext101_32x8d-p=1-q=2-alpha=1,0.1-664x498.log 2>&1 & # The saved checkpoint is copied and renamed as "p1q2plus0.1variant.pth"
 ```
 More options can be seen by running the help command `python main.py --help`.
 #### Visualization
@@ -54,19 +54,19 @@ Note: We do not set `drop_last=True` where we obtained our results in the paper.
 ### Testing
 #### Testing on KonIQ-10k test set (Intra Dataset Evaluation)
 ```bash
-CUDA_VISIBLE_DEVICES=0 python test_dataset.py --dataset KonIQ-10k --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
-CUDA_VISIBLE_DEVICES=1 python test_dataset.py --dataset KonIQ-10k --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
+CUDA_VISIBLE_DEVICES=0 python test_dataset.py --dataset KonIQ-10k --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
+CUDA_VISIBLE_DEVICES=1 python test_dataset.py --dataset KonIQ-10k --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
 ```
 #### Testing on CLIVE (Cross Dataset Evaluation)
 ```bash
-CUDA_VISIBLE_DEVICES=0 python test_dataset.py --dataset CLIVE --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
-CUDA_VISIBLE_DEVICES=1 python test_dataset.py --dataset CLIVE --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
+CUDA_VISIBLE_DEVICES=0 python test_dataset.py --dataset CLIVE --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
+CUDA_VISIBLE_DEVICES=1 python test_dataset.py --dataset CLIVE --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
 ```
 #### Test Demo
 ```bash
-CUDA_VISIBLE_DEVICES=0 python test_demo.py --img data/1000.JPG --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
+CUDA_VISIBLE_DEVICES=0 python test_demo.py --img_path data/1000.JPG --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2.pth
 # > The image quality score is 10.430044178601875
-CUDA_VISIBLE_DEVICES=1 python test_demo.py --img data/1000.JPG --resize --arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
+CUDA_VISIBLE_DEVICES=1 python test_demo.py --img_path data/1000.JPG --resize -arch resnext101_32x8d --trained_model_file checkpoints/p1q2plus0.1variant.pth
 # > The image quality score is 16.726127839961094
 ```
 
